@@ -2,7 +2,14 @@ import { Chart, ChartProps } from "cdk8s";
 import { Construct } from "constructs";
 import { KubeDeployment, KubeHorizontalPodAutoscaler } from "../imports/k8s";
 
-export class DeploymentChart extends Chart {
+export class Application {
+  constructor(scope: Construct, id: string, props: ChartProps = { }) {
+    new DeploymentChart(scope, `${id}-deployment`, props)
+    new HpaChart(scope, `${id}-hpa`, props)
+  }
+}
+
+class DeploymentChart extends Chart {
   constructor(scope: Construct, id: string, props: ChartProps = { }) {
     super(scope, id, props);
 
@@ -70,7 +77,7 @@ export class DeploymentChart extends Chart {
   }
 }
 
-export class HpaChart extends Chart {
+class HpaChart extends Chart {
   constructor(scope: Construct, id: string, props: ChartProps = { }) {
     super(scope, id, props);
 
