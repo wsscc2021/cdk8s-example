@@ -1,15 +1,7 @@
-import { Construct } from 'constructs';
-import { App, Chart, ChartProps } from 'cdk8s';
-
-export class MyChart extends Chart {
-  constructor(scope: Construct, id: string, props: ChartProps = { }) {
-    super(scope, id, props);
-
-    // define resources here
-
-  }
-}
+import { App, } from 'cdk8s';
+import { DeploymentChart, HpaChart } from './src/webapp-loadtest-demo';
 
 const app = new App();
-new MyChart(app, 'cdk8s');
+new DeploymentChart(app, 'deployment', {namespace:'app'});
+new HpaChart(app, 'hpa', {namespace:'app'});
 app.synth();
