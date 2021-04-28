@@ -18,9 +18,10 @@ export class Application {
       name: 'webapp-loadtest-demo'
     }
     
-    new DeploymentChart(scope, `${id}-deployment`, props, info)
-    new HpaChart(scope, `${id}-hpa`, props, info)
-    new ServiceChart(scope, `${id}-service`, props, info)
+    const deployment = new DeploymentChart(scope, `${id}-deployment`, props, info)
+    const hpa = new HpaChart(scope, `${id}-hpa`, props, info)
+    const service = new ServiceChart(scope, `${id}-service`, props, info)
+    return {deployment, hpa, service}
   }
 }
 
@@ -30,7 +31,10 @@ class DeploymentChart extends Chart {
 
     // write code here
 
-    new KubeDeployment(this, 'webapp-loadtest-demo', {
+    new KubeDeployment(this, `${info.name}-deployment`, {
+      metadata: {
+        name: `${info.name}-deployment`
+      },
       spec: {
         replicas: 2,
         selector: {
@@ -93,7 +97,10 @@ class HpaChart extends Chart {
     super(scope, id, props);
 
     // write code here
-    new KubeHorizontalPodAutoscaler(this, 'webapp-loadtest-demo-hpa', {
+    new KubeHorizontalPodAutoscaler(this, `${info.name}-hpa`, {
+      metadata: {
+        name: `${info.name}-hpa`
+      },
       spec: {
         scaleTargetRef: {
           apiVersion: 'apps/v1',
@@ -134,7 +141,10 @@ class ServiceChart extends Chart {
     super(scope, id, props);
 
     // write code here
-    new KubeService(this, 'webapp-loadtest-demo-service', {
+    new KubeService(this, `${info.name}-service`, {
+      metadata: {
+        name: `${info.name}-hpa`
+      },
       spec: {
         selector: info.label,
         type: 'ClusterIP',
