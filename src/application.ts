@@ -1,6 +1,6 @@
 import { Chart, ChartProps } from "cdk8s";
 import { Construct } from "constructs";
-import { KubeDeployment, KubeHorizontalPodAutoscaler, KubeService } from "../imports/k8s";
+import { KubeDeployment, KubeHorizontalPodAutoscalerV2Beta2, KubeService } from "../imports/k8s";
 
 export class Application {
   constructor(scope: Construct, id: string, props: ChartProps = { }) {
@@ -11,17 +11,17 @@ export class Application {
         'app.kubernetes.io/version': '0.0.4-SNAPSHOT'
       },
       limit: {
-        cpu: '1000m',
-        memory: '2000Mi'
+        'cpu': '1000m',
+        'memory': '2000Mi'
       },
       port: 8080,
       name: 'webapp-loadtest-demo'
     }
     
     const deployment = new DeploymentChart(scope, `${id}-deployment`, props, info)
-    const hpa = new HpaChart(scope, `${id}-hpa`, props, info)
-    const service = new ServiceChart(scope, `${id}-service`, props, info)
-    return {deployment, hpa, service}
+    const hpa        = new HpaChart(scope, `${id}-hpa`, props, info)
+    const service    = new ServiceChart(scope, `${id}-service`, props, info)
+    return {info, deployment, hpa, service}
   }
 }
 
@@ -97,7 +97,7 @@ class HpaChart extends Chart {
     super(scope, id, props);
 
     // write code here
-    new KubeHorizontalPodAutoscaler(this, `${info.name}-hpa`, {
+    new KubeHorizontalPodAutoscalerV2Beta2(this, `${info.name}-hpa`, {
       metadata: {
         name: `${info.name}-hpa`
       },
@@ -143,7 +143,7 @@ class ServiceChart extends Chart {
     // write code here
     new KubeService(this, `${info.name}-service`, {
       metadata: {
-        name: `${info.name}-hpa`
+        name: `${info.name}-service`
       },
       spec: {
         selector: info.label,
