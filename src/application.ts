@@ -2,22 +2,22 @@ import { Chart, ChartProps } from "cdk8s";
 import { Construct } from "constructs";
 import { KubeDeployment, KubeHorizontalPodAutoscalerV2Beta2, KubeService } from "../imports/k8s";
 
+interface ApplicationProps {
+  name: string
+  image: string
+  label: {
+    'app.kubernetes.io/name': string,
+    'app.kubernetes.io/version': string
+  }
+  limit: {
+    'cpu': string,
+    'memory': string
+  }
+  port: number
+}
+
 export class Application {
-  constructor(scope: Construct, id: string, props: ChartProps = { }) {
-    const info = {
-      image: '242593025403.dkr.ecr.us-east-1.amazonaws.com/webapp-loadtest-demo:0.0.4-SNAPSHOT',
-      label: {
-        'app.kubernetes.io/name': 'webapp-loadtest-demo',
-        'app.kubernetes.io/version': '0.0.4-SNAPSHOT'
-      },
-      limit: {
-        'cpu': '1000m',
-        'memory': '2000Mi'
-      },
-      port: 8080,
-      name: 'webapp-loadtest-demo'
-    }
-    
+  constructor(scope: Construct, id: string, props: ChartProps = { }, info: ApplicationProps) {    
     const deployment = new DeploymentChart(scope, `${id}-deployment`, props, info)
     const hpa        = new HpaChart(scope, `${id}-hpa`, props, info)
     const service    = new ServiceChart(scope, `${id}-service`, props, info)

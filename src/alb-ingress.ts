@@ -33,10 +33,17 @@ export class AlbIngressChart extends Chart {
             http: {
               paths: [
                 {
-                  path: '/*',
+                  path: '/foo*',
                   backend: {
-                    serviceName: `${applications['webapp-loadtest-demo']['info']['name']}-service`,
-                    servicePort: applications['webapp-loadtest-demo']['info']['port']
+                    serviceName: `${applications['sample-app-foo-v1']['info']['name']}-service`,
+                    servicePort: applications['sample-app-foo-v1']['info']['port']
+                  }
+                },
+                {
+                  path: '/bar*',
+                  backend: {
+                    serviceName: `${applications['sample-app-bar-v1']['info']['name']}-service`,
+                    servicePort: applications['sample-app-bar-v1']['info']['port']
                   }
                 }
               ]
