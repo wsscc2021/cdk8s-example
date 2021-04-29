@@ -25,7 +25,7 @@ export class AlbIngressChart extends Chart {
                   path: '/*',
                   backend: {
                     serviceName: `${applications['webapp-loadtest-demo']['info']['name']}-service`,
-                    servicePort: 8080
+                    servicePort: applications['webapp-loadtest-demo']['info']['port']
                   }
                 }
               ]
