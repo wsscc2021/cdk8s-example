@@ -17,7 +17,7 @@ interface ApplicationProps {
   port: number
 }
 
-export class Application {
+export class AppMeshIngressGateway {
   constructor(scope: Construct, id: string, props: ChartProps = { }, info: ApplicationProps) {    
     const deployment = new DeploymentChart(scope, `${id}-deployment`, props, info)
     const hpa        = new HpaChart(scope, `${id}-hpa`, props, info)
@@ -50,7 +50,7 @@ class DeploymentChart extends Chart {
             terminationGracePeriodSeconds: 60,
             containers: [
               {
-                name: info.name,
+                name: 'envoy',
                 image: info.image,
                 ports: [ { containerPort: info.port }],
                 resources: {
@@ -63,28 +63,6 @@ class DeploymentChart extends Chart {
                     memory: info.limit.memory
                   }
                 },
-                readinessProbe: {
-                  httpGet: {
-                    path: '/healthcheck/readiness',
-                    port: 8080
-                  },
-                  initialDelaySeconds: 15,
-                  periodSeconds: 10,
-                  timeoutSeconds: 5,
-                  successThreshold: 2,
-                  failureThreshold: 3
-                },
-                livenessProbe: {
-                  httpGet: {
-                    path: '/healthcheck/liveness',
-                    port: 8080
-                  },
-                  initialDelaySeconds: 45,
-                  periodSeconds: 10,
-                  timeoutSeconds: 5,
-                  successThreshold: 1,
-                  failureThreshold: 3
-                }
               }
             ]
           }
@@ -121,7 +99,7 @@ class HpaChart extends Chart {
                 averageUtilization: 50
               }
             }
-          },
+          }
         ]
       }
     })

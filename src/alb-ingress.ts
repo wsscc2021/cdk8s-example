@@ -17,7 +17,7 @@ export class AlbIngressChart extends Chart {
           'alb.ingress.kubernetes.io/security-groups': 'sg-0bcaa7d07a79af115',
           'alb.ingress.kubernetes.io/target-type': 'ip',
           'alb.ingress.kubernetes.io/backend-protocol': 'HTTP',
-          'alb.ingress.kubernetes.io/healthcheck-path': '/healthcheck',
+          'alb.ingress.kubernetes.io/healthcheck-path': '/foo/healthcheck',
           'alb.ingress.kubernetes.io/healthcheck-interval-seconds': '15',
           'alb.ingress.kubernetes.io/healthcheck-timeout-seconds': '5',
           'alb.ingress.kubernetes.io/healthy-threshold-count': '2',
@@ -33,19 +33,26 @@ export class AlbIngressChart extends Chart {
             http: {
               paths: [
                 {
-                  path: '/foo*',
+                  path: '/*',
                   backend: {
-                    serviceName: `${applications['sample-app-foo-v1']['info']['name']}-service`,
-                    servicePort: applications['sample-app-foo-v1']['info']['port']
+                    serviceName: `${applications['sample-app-ingress-gw-v1']['info']['name']}-service`,
+                    servicePort: applications['sample-app-ingress-gw-v1']['info']['port']
                   }
                 },
-                {
-                  path: '/bar*',
-                  backend: {
-                    serviceName: `${applications['sample-app-bar-v1']['info']['name']}-service`,
-                    servicePort: applications['sample-app-bar-v1']['info']['port']
-                  }
-                }
+                // {
+                //   path: '/foo*',
+                //   backend: {
+                //     serviceName: `${applications['sample-app-foo-v1']['info']['name']}-service`,
+                //     servicePort: applications['sample-app-foo-v1']['info']['port']
+                //   }
+                // },
+                // {
+                //   path: '/bar*',
+                //   backend: {
+                //     serviceName: `${applications['sample-app-bar-v1']['info']['name']}-service`,
+                //     servicePort: applications['sample-app-bar-v1']['info']['port']
+                //   }
+                // }
               ]
             }
           }
